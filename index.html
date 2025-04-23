@@ -38,6 +38,61 @@
       </div>
     </div>
   </div>
+  <script>
+    const apiKey = "cf6b324ca01d60f5a8d2bdc242b120dc"; // your API key
+    const searchBox = document.querySelector(".search input");
+    const searchBtn = document.querySelector(".search button");
+
+    async function getWeather(city) {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          alert("City not found!");
+          return;
+        }
+
+        const data = await response.json();
+
+        document.querySelector(".city").innerText = data.name;
+        document.querySelector(".temp").innerText = `${Math.round(data.main.temp)}°C`;
+        document.querySelector(".humidity").innerText = `${data.main.humidity}%`;
+        document.querySelector(".wind").innerText = `${data.wind.speed} km/h`;
+
+        // Change icon based on weather
+        const weatherType = data.weather[0].main.toLowerCase();
+        const icon = document.querySelector(".weather-icon");
+
+        if (weatherType.includes("cloud")) {
+          icon.src = "Weather_app/images/clouds.png";
+        } else if (weatherType.includes("rain")) {
+          icon.src = "Weather_app/images/rain.png";
+        } else if (weatherType.includes("clear")) {
+          icon.src = "Weather_app/images/clear.png";
+        } else if (weatherType.includes("snow")) {
+          icon.src = "Weather_app/images/snow.png";
+        } else if (weatherType.includes("mist") || weatherType.includes("fog")) {
+          icon.src = "Weather_app/images/mist.png";
+        } else {
+          icon.src = "Weather_app/images/default.png";
+        }
+
+      } catch (error) {
+        console.error(error);
+        alert("Something went wrong!");
+      }
+    }
+
+    searchBtn.addEventListener("click", () => {
+      const city = searchBox.value.trim();
+      if (city) {
+        getWeather(city);
+      }
+    });
+  </script>
+
+
 </body>
 
 </html>
